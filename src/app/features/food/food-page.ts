@@ -18,7 +18,10 @@ const numberControl = () => new FormControl<number | null>(null);
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     <h1>New food</h1>
-    <p class="lead">Add a food that is not in the computer app yet. Values are as printed on the label.</p>
+    <p class="lead">
+      Add a food that is not in the computer app yet. Values are as printed on the label. Everything except
+      omega-3 and omega-6 is required; enter 0 when the label says none.
+    </p>
     <form [formGroup]="form" (ngSubmit)="submit()" novalidate>
       <app-field label="Food name" [error]="errors().name ?? null">
         <input formControlName="name" type="text" autocomplete="off" autocapitalize="sentences" />
@@ -43,17 +46,17 @@ const numberControl = () => new FormControl<number | null>(null);
       <app-field label="Carbohydrates (g)" [error]="errors().carbohydrates ?? null">
         <input formControlName="carbohydrates" type="number" inputmode="decimal" step="any" min="0" />
       </app-field>
+      <app-field label="Saturated fat (g)" [error]="errors().saturatedFat ?? null">
+        <input formControlName="saturatedFat" type="number" inputmode="decimal" step="any" min="0" />
+      </app-field>
+      <app-field label="Sugars (g)" [error]="errors().sugars ?? null">
+        <input formControlName="sugars" type="number" inputmode="decimal" step="any" min="0" />
+      </app-field>
+      <app-field label="Fibre (g)" [error]="errors().fiber ?? null">
+        <input formControlName="fiber" type="number" inputmode="decimal" step="any" min="0" />
+      </app-field>
       <details>
         <summary>More nutrients (optional)</summary>
-        <app-field label="Saturated fat (g)" [optional]="true" [error]="errors().saturatedFat ?? null">
-          <input formControlName="saturatedFat" type="number" inputmode="decimal" step="any" min="0" />
-        </app-field>
-        <app-field label="Sugars (g)" [optional]="true" [error]="errors().sugars ?? null">
-          <input formControlName="sugars" type="number" inputmode="decimal" step="any" min="0" />
-        </app-field>
-        <app-field label="Fibre (g)" [optional]="true" [error]="errors().fiber ?? null">
-          <input formControlName="fiber" type="number" inputmode="decimal" step="any" min="0" />
-        </app-field>
         <app-field label="Omega-3 (g)" [optional]="true" [error]="errors().omega3 ?? null">
           <input formControlName="omega3" type="number" inputmode="decimal" step="any" min="0" />
         </app-field>

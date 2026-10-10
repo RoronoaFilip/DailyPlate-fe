@@ -102,4 +102,4 @@ requests of its own.
 The CSV headers and file names are a contract with the desktop app's importers. They are pinned by specs in
 `src/app/domain/*.spec.ts` and by `fixtures/`, which the desktop repository's `tests/test_phone_export.py` imports
 for real. After changing the format: `npm run fixtures:export`, commit, and copy `fixtures/*` into the desktop
-repository's `tests/fixtures/phone/`.
+repository's `tests/fixtures/phone/`. `.gitattributes` marks `fixtures/**` as `-text` so Git never rewrites their line endings, and the check also ignores CSV line endings, so it passes whether files were checked out on Windows, macOS or Linux.

@@ -16,9 +16,9 @@ export interface FoodDraft {
   fat: number;
   carbohydrates: number;
   protein: number;
-  saturatedFat: number | null;
-  sugars: number | null;
-  fiber: number | null;
+  saturatedFat: number;
+  sugars: number;
+  fiber: number;
   omega3: number | null;
   omega6: number | null;
 }

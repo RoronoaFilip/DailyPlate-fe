@@ -27,7 +27,7 @@ const items: OutboxItem[] = [
     ...base, id: 'f2', kind: 'food',
     payload: {
       name: 'Phone Egg, large', basis: 'count', calories: 78, fat: 5.3, carbohydrates: 0.6, protein: 6.3,
-      saturatedFat: null, sugars: null, fiber: null, omega3: null, omega6: null,
+      saturatedFat: 1.6, sugars: 0.2, fiber: 0, omega3: null, omega6: null,
     },
   },
   { ...base, id: 'm1', kind: 'meal', payload: { foodName: 'Phone Oats', grams: 45.5, meal: 'Breakfast', date: '2026-10-05' } },
@@ -40,10 +40,16 @@ const bundle = buildBundle(items, '2026-10-10');
 const files = new Map<string, Uint8Array>(bundle.entries.filter((e) => !e.name.includes('/')).map((e) => [e.name, e.data]));
 files.set('phone-export.zip', makeZip(bundle.entries));
 
+/** CSV line endings are ignored when comparing, so Git's end-of-line settings cannot break the check. */
+function sameFile(name: string, expected: Uint8Array, actual: Buffer): boolean {
+  const lf = (bytes: Uint8Array) => Buffer.from(Buffer.from(bytes).toString('utf8').replace(/\r\n/g, '\n'));
+  return name.endsWith('.csv') ? lf(expected).equals(lf(actual)) : Buffer.from(expected).equals(actual);
+}
+
 if (process.argv.includes('--check')) {
   const stale = [...files].filter(([name, data]) => {
     try {
-      return !Buffer.from(readFileSync(join(directory, name))).equals(Buffer.from(data));
+      return !sameFile(name, data, readFileSync(join(directory, name)));
     } catch {
       return true;
     }

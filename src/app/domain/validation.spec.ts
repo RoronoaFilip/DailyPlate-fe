@@ -4,7 +4,7 @@ import { validateFood, validateMeal, type FoodForm, type MealForm } from './vali
 const goodMeal: MealForm = { foodName: '  Oats  ', grams: 45.5, meal: 'Breakfast', date: '2026-10-05' };
 const goodFood: FoodForm = {
   name: 'Oats', basis: 'g', calories: 380, fat: 7, carbohydrates: 60, protein: 13,
-  saturatedFat: null, sugars: null, fiber: 10, omega3: null, omega6: null,
+  saturatedFat: 1, sugars: 1, fiber: 10, omega3: null, omega6: null,
 };
 
 describe('validateMeal', () => {
@@ -32,20 +32,34 @@ describe('validateMeal', () => {
 });
 
 describe('validateFood', () => {
-  it('accepts a food and turns empty optional values into null', () => {
+  it('accepts a food and turns the empty optional omega values into null', () => {
     const result = validateFood(goodFood);
     expect(result.ok).toBe(true);
     if (result.ok) {
       expect(result.value.fiber).toBe(10);
-      expect(result.value.sugars).toBeNull();
+      expect(result.value.saturatedFat).toBe(1);
+      expect(result.value.omega3).toBeNull();
+      expect(result.value.omega6).toBeNull();
     }
   });
 
-  it('requires a name, a basis and the four main nutrients', () => {
-    const result = validateFood({ ...goodFood, name: '', basis: 'x', calories: null, protein: null });
+  it('requires a name, a basis and all seven main nutrients', () => {
+    const result = validateFood({
+      ...goodFood, name: '', basis: 'x', calories: null, protein: null, saturatedFat: null, sugars: null, fiber: null,
+    });
     expect(result.ok).toBe(false);
     if (!result.ok) {
-      expect(Object.keys(result.errors).sort()).toEqual(['basis', 'calories', 'name', 'protein']);
+      expect(Object.keys(result.errors).sort()).toEqual([
+        'basis', 'calories', 'fiber', 'name', 'protein', 'saturatedFat', 'sugars',
+      ]);
+    }
+  });
+
+  it('asks for saturated fat, sugars and fibre by name, and accepts 0 for each', () => {
+    for (const field of ['saturatedFat', 'sugars', 'fiber'] as const) {
+      const missing = validateFood({ ...goodFood, [field]: null });
+      expect(missing.ok).toBe(false);
+      expect(validateFood({ ...goodFood, [field]: 0 }).ok).toBe(true);
     }
   });
 

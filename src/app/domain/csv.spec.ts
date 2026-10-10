@@ -25,9 +25,14 @@ describe('csv', () => {
     ]);
   });
 
-  it('leaves optional nutrients as empty cells, never zeros', () => {
-    const food: FoodDraft = { ...oats, saturatedFat: null, sugars: null, fiber: null, omega3: null, omega6: null };
-    expect(foodsCsv([food]).split('\r\n')[1]).toBe('Oats,g,380,7,,60,,13,,,');
+  it('leaves the optional omega fibres as empty cells, never zeros', () => {
+    const food: FoodDraft = { ...oats, omega3: null, omega6: null };
+    expect(foodsCsv([food]).split('\r\n')[1]).toBe('Oats,g,380,7,1,60,1,13,10,,');
+  });
+
+  it('writes a required nutrient that is zero as 0', () => {
+    const food: FoodDraft = { ...oats, saturatedFat: 0, sugars: 0, fiber: 0 };
+    expect(foodsCsv([food]).split('\r\n')[1]).toBe('Oats,g,380,7,0,60,0,13,0,0.1,1.2');
   });
 
   it('writes a diary file', () => {

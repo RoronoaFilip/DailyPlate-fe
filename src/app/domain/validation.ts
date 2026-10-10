@@ -76,8 +76,11 @@ const REQUIRED_NUMBERS = [
   ['protein', 'Protein'],
   ['fat', 'Fat'],
   ['carbohydrates', 'Carbohydrates'],
+  ['saturatedFat', 'Saturated fat'],
+  ['sugars', 'Sugars'],
+  ['fiber', 'Fibre'],
 ] as const;
-const OPTIONAL_NUMBERS = ['saturatedFat', 'sugars', 'fiber', 'omega3', 'omega6'] as const;
+const OPTIONAL_NUMBERS = ['omega3', 'omega6'] as const;
 
 export function validateFood(form: FoodForm): Validation<FoodDraft, FoodField> {
   const errors: Partial<Record<FoodField, string>> = {};
@@ -117,9 +120,9 @@ export function validateFood(form: FoodForm): Validation<FoodDraft, FoodField> {
       fat: form.fat as number,
       carbohydrates: form.carbohydrates as number,
       protein: form.protein as number,
-      saturatedFat: optional(form.saturatedFat),
-      sugars: optional(form.sugars),
-      fiber: optional(form.fiber),
+      saturatedFat: form.saturatedFat as number,
+      sugars: form.sugars as number,
+      fiber: form.fiber as number,
       omega3: optional(form.omega3),
       omega6: optional(form.omega6),
     },

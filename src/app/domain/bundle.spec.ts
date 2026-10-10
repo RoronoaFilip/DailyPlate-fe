@@ -12,7 +12,7 @@ const items: OutboxItem[] = [
     ...base, id: '4', kind: 'food',
     payload: {
       name: 'Rice', basis: 'g', calories: 130, fat: 0.3, carbohydrates: 28, protein: 2.7,
-      saturatedFat: null, sugars: null, fiber: null, omega3: null, omega6: null,
+      saturatedFat: 0.1, sugars: 0.1, fiber: 0.4, omega3: null, omega6: null,
     },
   },
   { ...base, id: '5', kind: 'photo', payload: { name: 'b', mime: 'image/jpeg', bytes: bytes(3) } },
