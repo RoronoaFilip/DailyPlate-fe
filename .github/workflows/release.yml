@@ -25,7 +25,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@v7
         with:
           node-version-file: .nvmrc
           cache: ${{ hashFiles('package-lock.json') != '' && 'npm' || '' }}
@@ -60,13 +60,13 @@ jobs:
           cd dist/dailyplate-phone/browser
           zip -r "../../../dailyplate-phone-v${{ steps.meta.outputs.version }}.zip" .
 
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v7
         with:
           name: site-zip
           path: dailyplate-phone-v*.zip
           if-no-files-found: error
 
-      - uses: actions/upload-pages-artifact@v3
+      - uses: actions/upload-pages-artifact@v5
         with:
           path: dist/dailyplate-phone/browser
 
@@ -96,7 +96,7 @@ jobs:
         with:
           name: site-zip
 
-      - uses: softprops/action-gh-release@v2
+      - uses: softprops/action-gh-release@v3
         with:
           files: dailyplate-phone-v*.zip
           generate_release_notes: true
