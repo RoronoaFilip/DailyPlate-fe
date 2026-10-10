@@ -96,7 +96,7 @@ jobs:
         with:
           name: site-zip
 
-      - uses: softprops/action-gh-release@v2
+      - uses: softprops/action-gh-release@v3
         with:
           files: dailyplate-phone-v*.zip
           generate_release_notes: true
