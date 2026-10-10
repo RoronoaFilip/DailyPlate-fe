@@ -1,0 +1,68 @@
+name: Deploy to GitHub Pages
+
+run-name: Deploy ${{ inputs.tag || github.event.release.tag_name }} to GitHub Pages
+
+on:
+  release:
+    types: [released]
+  workflow_call:
+    inputs:
+      tag:
+        description: 'Release tag to deploy, e.g. v1.3.4'
+        required: true
+        type: string
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: 'Release tag to deploy, e.g. v1.3.4'
+        required: true
+        type: string
+
+permissions:
+  contents: read
+
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    name: Publish the release's site
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: read
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    env:
+      TAG: ${{ inputs.tag || github.event.release.tag_name }}
+      GH_TOKEN: ${{ github.token }}
+    steps:
+      - name: Download the site zip from the release
+        run: |
+          if [ -z "$TAG" ]; then
+            echo "::error::No release tag was given."
+            exit 1
+          fi
+          mkdir site
+          gh release download "$TAG" --repo "$GITHUB_REPOSITORY" --pattern 'dailyplate-phone-*.zip' --dir site
+          cd site
+          unzip -q dailyplate-phone-*.zip
+          rm dailyplate-phone-*.zip
+          if [ ! -f index.html ]; then
+            echo "::error::The zip attached to $TAG does not contain index.html at its top level."
+            exit 1
+          fi
+
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: site
+
+      - id: deployment
+        uses: actions/deploy-pages@v4
+
+      - name: Summary
+        run: echo "Published $TAG at ${{ steps.deployment.outputs.page_url }}" >> "$GITHUB_STEP_SUMMARY"
