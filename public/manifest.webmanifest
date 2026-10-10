@@ -1,0 +1,16 @@
+{
+  "name": "Daily Plate Phone",
+  "short_name": "Daily Plate",
+  "description": "Capture food on your phone and send it to the Daily Plate desktop app.",
+  "display": "standalone",
+  "orientation": "portrait",
+  "start_url": "./",
+  "scope": "./",
+  "background_color": "#edf2f9",
+  "theme_color": "#263752",
+  "icons": [
+    { "src": "icons/icon-192x192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "icons/icon-512x512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "icons/icon-maskable-512x512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ]
+}

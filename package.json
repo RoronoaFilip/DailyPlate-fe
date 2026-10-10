@@ -1,0 +1,43 @@
+{
+  "name": "dailyplate-phone",
+  "version": "0.1.0",
+  "description": "Phone web app that captures barcode photos, meals and new foods and sends them to the Daily Plate desktop app.",
+  "private": true,
+  "engines": {
+    "node": ">=22.12.0"
+  },
+  "scripts": {
+    "ng": "ng",
+    "start": "ng serve",
+    "build": "ng build",
+    "watch": "ng build --watch --configuration development",
+    "test": "ng test --no-watch",
+    "test:watch": "ng test",
+    "check:arch": "node scripts/check-architecture.mjs",
+    "check:theme": "node scripts/check-theme.mjs",
+    "check:scripts": "node --test \"scripts/*.test.mjs\"",
+    "fixtures:export": "tsx scripts/export-fixtures.ts",
+    "fixtures:check": "tsx scripts/export-fixtures.ts --check",
+    "verify": "npm run check:arch && npm run check:theme && npm run check:scripts && npm run fixtures:check && npm test && npm run build"
+  },
+  "dependencies": {
+    "@angular/common": "^21.0.0",
+    "@angular/compiler": "^21.0.0",
+    "@angular/core": "^21.0.0",
+    "@angular/forms": "^21.0.0",
+    "@angular/platform-browser": "^21.0.0",
+    "@angular/router": "^21.0.0",
+    "@angular/service-worker": "^21.0.0",
+    "rxjs": "~7.8.0",
+    "tslib": "^2.3.0"
+  },
+  "devDependencies": {
+    "@angular/build": "^21.0.0",
+    "@angular/cli": "^21.0.0",
+    "@angular/compiler-cli": "^21.0.0",
+    "jsdom": "^27.1.0",
+    "tsx": "^4.20.0",
+    "typescript": "~5.9.2",
+    "vitest": "^4.0.8"
+  }
+}

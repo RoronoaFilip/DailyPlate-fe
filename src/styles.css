@@ -1,0 +1,186 @@
+/*
+ * Daily Plate Phone: global styles.
+ *
+ * The colours are the desktop app's light palette, copied from its main window stylesheet, so this page feels
+ * like the same product. There is deliberately no dark theme (the desktop app has none). `npm run check:theme`
+ * guards these values.
+ */
+:root {
+  --bg: #edf2f9;
+  --bg-dialog: #e8eef7;
+  --surface: #f1f5fb;
+  --surface-header: #dfe8f5;
+  --text: #243041;
+  --text-strong: #172538;
+  --text-muted: #536175;
+  --border: #c2cede;
+  --btn-bg: #ffffff;
+  --btn-text: #243b61;
+  --btn-border: #9db0cf;
+  --btn-hover: #eef3fc;
+  --btn-pressed: #dbe5f6;
+  --primary: #3f5bbf;
+  --primary-border: #334c9f;
+  --primary-hover: #324ba6;
+  --primary-pressed: #2a3f8c;
+  --focus: #4f68c5;
+  --rail: #263752;
+  --rail-border: #1e2c43;
+  --rail-text: #d6e0ef;
+  --rail-active: #506da4;
+  --rail-active-edge: #b9d0ff;
+  --ok: #1f7a4d;
+  --ok-bg: #e1f3e8;
+  --danger: #b53d48;
+  --danger-bg: #fbe1e4;
+  --warn: #9a6700;
+  --warn-bg: #fff0d2;
+  --radius: 9px;
+  --tab-height: 64px;
+  color-scheme: light;
+}
+
+*, *::before, *::after { box-sizing: border-box; }
+
+html {
+  font-size: 16px; /* 16px inputs stop iOS Safari from zooming into a field */
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+  font-family: system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  line-height: 1.45;
+  padding-top: env(safe-area-inset-top, 0px);
+}
+
+.page {
+  max-width: 640px;
+  margin: 0 auto;
+  padding: 16px 16px calc(var(--tab-height) + env(safe-area-inset-bottom, 0px) + 24px);
+}
+
+h1 { font-size: 1.5rem; margin: 8px 0 4px; color: var(--text-strong); }
+h2 { font-size: 1.1rem; margin: 24px 0 8px; color: var(--text-strong); }
+.lead { margin: 0 0 16px; color: var(--text-muted); }
+
+form { display: grid; gap: 14px; }
+
+.field { display: grid; gap: 4px; }
+.field-label { font-weight: 600; }
+.field-hint { color: var(--text-muted); font-weight: 400; font-size: 0.9rem; }
+.field-error { color: var(--danger); font-weight: 600; }
+
+input[type='text'], input[type='number'], input[type='date'], select {
+  width: 100%;
+  min-height: 44px;
+  padding: 9px 12px;
+  font: inherit;
+  color: var(--text);
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+}
+
+input:focus-visible, select:focus-visible, button:focus-visible, a:focus-visible, summary:focus-visible {
+  outline: 3px solid var(--focus);
+  outline-offset: 2px;
+}
+
+fieldset.choice { border: 1px solid var(--border); border-radius: var(--radius); padding: 8px 12px; display: flex; gap: 20px; flex-wrap: wrap; }
+fieldset.choice legend { font-weight: 600; padding: 0 4px; }
+fieldset.choice label, .check { display: flex; align-items: center; gap: 8px; min-height: 44px; }
+input[type='radio'], input[type='checkbox'] { width: 22px; height: 22px; accent-color: var(--primary); }
+
+details { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 4px 12px 12px; }
+summary { min-height: 44px; display: flex; align-items: center; cursor: pointer; font-weight: 600; }
+details .field { margin-top: 10px; }
+
+.actions { display: flex; gap: 10px; flex-wrap: wrap; margin: 12px 0; }
+
+.btn {
+  min-height: 44px;
+  padding: 9px 16px;
+  font: inherit;
+  font-weight: 600;
+  color: var(--btn-text);
+  background: var(--btn-bg);
+  border: 1px solid var(--btn-border);
+  border-radius: var(--radius);
+  cursor: pointer;
+}
+.btn:hover { background: var(--btn-hover); }
+.btn:active { background: var(--btn-pressed); }
+.btn:disabled { opacity: 0.55; cursor: default; }
+.btn-primary { color: #ffffff; background: var(--primary); border-color: var(--primary-border); }
+.btn-primary:hover { background: var(--primary-hover); }
+.btn-primary:active { background: var(--primary-pressed); }
+.btn-block { width: 100%; margin-top: 4px; }
+.btn-small { min-height: 36px; padding: 4px 12px; }
+
+.status {
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
+  margin: 14px 0;
+  padding: 10px 12px;
+  color: var(--text);
+  background: var(--surface-header);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+}
+.status > span:first-child { font-weight: 700; min-width: 1.2em; text-align: center; }
+.status-ok { background: var(--ok-bg); border-color: var(--ok); }
+.status-error { background: var(--danger-bg); border-color: var(--danger); }
+.status-text { flex: 1; }
+
+.card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 4px 14px 10px; margin: 14px 0; }
+
+.list { list-style: none; margin: 12px 0; padding: 0; display: grid; gap: 8px; }
+.list li { display: flex; align-items: center; gap: 10px; padding: 8px 10px; background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); }
+.list-muted li { color: var(--text-muted); }
+.list-text { flex: 1; overflow-wrap: anywhere; }
+.tag { font-size: 0.8rem; font-weight: 700; padding: 2px 8px; color: var(--text-strong); background: var(--surface-header); border-radius: 999px; }
+
+.tab-bar {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  background: var(--rail);
+  border-top: 1px solid var(--rail-border);
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+}
+.tab {
+  position: relative;
+  flex: 1;
+  min-height: var(--tab-height);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+  color: var(--rail-text);
+  text-decoration: none;
+  font-size: 0.85rem;
+  border-top: 3px solid transparent;
+}
+.tab-icon { font-size: 1.25rem; line-height: 1; }
+.tab-active { background: var(--rail-active); color: #ffffff; border-top-color: var(--rail-active-edge); }
+.badge {
+  position: absolute;
+  top: 6px;
+  left: calc(50% + 8px);
+  min-width: 20px;
+  padding: 0 6px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  line-height: 20px;
+  text-align: center;
+  color: #ffffff;
+  background: var(--danger);
+  border-radius: 999px;
+}

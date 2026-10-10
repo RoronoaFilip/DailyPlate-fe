@@ -1,0 +1,49 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  verify:
+    name: Checks, tests and build
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          # Caching needs a lock file; the first run before one is committed simply skips the cache.
+          cache: ${{ hashFiles('package-lock.json') != '' && 'npm' || '' }}
+
+      - name: Install dependencies
+        run: |
+          if [ -f package-lock.json ]; then npm ci; else npm install --no-audit --no-fund; fi
+
+      - name: Architecture rules (see .claude/architecture.md)
+        run: npm run check:arch
+
+      - name: Palette matches the desktop app
+        run: npm run check:theme
+
+      - name: Tests of the check scripts
+        run: npm run check:scripts
+
+      - name: Fixtures for the desktop app are up to date
+        run: npm run fixtures:check
+
+      - name: Unit tests
+        run: npm test
+
+      - name: Production build
+        run: npm run build

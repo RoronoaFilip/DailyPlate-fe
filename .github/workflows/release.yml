@@ -1,0 +1,102 @@
+name: Release
+
+# Push a tag such as v0.1.0 (it must match "version" in package.json) to build, publish the site on
+# GitHub Pages and attach the built site as a zip to a GitHub Release.
+# One-time setup: Settings > Pages > Build and deployment > Source: "GitHub Actions".
+on:
+  push:
+    tags: ['v*.*.*']
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: release
+  cancel-in-progress: false
+
+jobs:
+  build:
+    name: Verify and build
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    outputs:
+      version: ${{ steps.meta.outputs.version }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: ${{ hashFiles('package-lock.json') != '' && 'npm' || '' }}
+
+      - name: Install dependencies
+        run: |
+          if [ -f package-lock.json ]; then npm ci; else npm install --no-audit --no-fund; fi
+
+      - name: Check the tag matches package.json
+        id: meta
+        run: |
+          version=$(node -p "require('./package.json').version")
+          if [ "$GITHUB_REF_TYPE" = "tag" ] && [ "$GITHUB_REF_NAME" != "v$version" ]; then
+            echo "::error::Tag $GITHUB_REF_NAME does not match package.json version v$version"
+            exit 1
+          fi
+          echo "version=$version" >> "$GITHUB_OUTPUT"
+
+      - name: Checks and tests
+        run: |
+          npm run check:arch
+          npm run check:theme
+          npm run check:scripts
+          npm run fixtures:check
+          npm test
+
+      - name: Build for GitHub Pages
+        run: npx ng build --configuration production --base-href "/${{ github.event.repository.name }}/"
+
+      - name: Zip the built site
+        run: |
+          cd dist/dailyplate-phone/browser
+          zip -r "../../../dailyplate-phone-v${{ steps.meta.outputs.version }}.zip" .
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: site-zip
+          path: dailyplate-phone-v*.zip
+          if-no-files-found: error
+
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: dist/dailyplate-phone/browser
+
+  deploy-pages:
+    name: Publish on GitHub Pages
+    needs: build
+    runs-on: ubuntu-latest
+    permissions:
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4
+
+  github-release:
+    name: GitHub Release
+    needs: build
+    if: github.ref_type == 'tag'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          name: site-zip
+
+      - uses: softprops/action-gh-release@v2
+        with:
+          files: dailyplate-phone-v*.zip
+          generate_release_notes: true
