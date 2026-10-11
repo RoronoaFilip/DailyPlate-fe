@@ -18,7 +18,7 @@ src/app/
                      share sheet) and the signal-based state the pages read (OutboxState).
   ui/                dumb, reusable presentational components: inputs/outputs only, no services, no state
                      beyond what is passed in (status message, form field, tab bar).
-  features/<name>/   one folder per screen/route (photo, meal, food, outbox). Smart standalone components:
+  features/<name>/   one folder per screen/route (photo, meal, food, outbox, sent). Smart standalone components:
                      they read state, call domain functions, and compose ui components.
   app.ts, app.config.ts, app.routes.ts   the composition root: the ONLY place ports are bound to adapters.
 ```
@@ -38,10 +38,10 @@ Never: a feature importing another feature (move the shared piece down to `ui`, 
 
 ## Ports and adapters
 
-- A port is an abstract class in `domain/ports.ts` (`OutboxStore`, `PhotoShrinker`, `FileSharer`). It doubles as
+- A port is an abstract class in `domain/ports.ts` (`OutboxStore`, `SettingsStore`, `PhotoShrinker`, `FileSharer`). It doubles as
   the Angular injection token.
 - An adapter lives in `data/` and `extends` the port (`IndexedDbOutboxStore`, `CanvasPhotoShrinker`,
-  `WebShareSharer`).
+  `WebShareSharer`, `LocalStorageSettingsStore`).
 - `app.config.ts` binds them: `{ provide: OutboxStore, useClass: IndexedDbOutboxStore }`.
 - Domain classes that need a port take it in the constructor (`new Outbox(store, newId, now)`); `app.config.ts`
   builds them with a factory. Tests pass in-memory fakes (`domain/testing.ts`).
@@ -83,4 +83,5 @@ Never: a feature importing another feature (move the shared piece down to `ui`, 
 2. New outside dependency (storage, sensor, network): add a port to `domain/ports.ts`, an adapter in `data/`,
    bind it in `app.config.ts`.
 3. New screen: `features/<name>/<name>-page.ts`, a lazy route in `app.routes.ts`, a tab in `ui/tab-bar.ts`.
+   Retention, expiry and bulk-delete rules live in `domain/retention.ts` and `domain/outbox.ts`, not in the page.
 4. Run `npm run verify` before pushing.

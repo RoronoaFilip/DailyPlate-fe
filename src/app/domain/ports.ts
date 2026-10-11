@@ -1,4 +1,5 @@
 import type { Bytes, OutboxItem } from './models';
+import type { Retention } from './retention';
 
 /**
  * Ports: what the domain needs from the outside world. The `data` layer provides the real adapters;
@@ -10,6 +11,12 @@ export abstract class OutboxStore {
   abstract getAll(): Promise<OutboxItem[]>;
   abstract put(item: OutboxItem): Promise<void>;
   abstract delete(id: string): Promise<void>;
+}
+
+/** Small preferences that are not outbox data (kept in localStorage in the app). */
+export abstract class SettingsStore {
+  abstract getSentRetention(): Retention;
+  abstract setSentRetention(retention: Retention): void;
 }
 
 /** Turns a camera picture into a small JPEG. */

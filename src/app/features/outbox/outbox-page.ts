@@ -1,4 +1,5 @@
 import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
+import { RouterLink } from '@angular/router';
 import { OutboxState } from '../../data/outbox-state';
 import { buildBundle } from '../../domain/bundle';
 import { toIsoDate } from '../../domain/dates';
@@ -22,7 +23,7 @@ const OUTCOME_TEXT: Record<Exclude<SendOutcome, 'cancelled'>, string> = {
 
 @Component({
   selector: 'app-outbox-page',
-  imports: [StatusMessage],
+  imports: [StatusMessage, RouterLink],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     <h1>Outbox</h1>
@@ -51,6 +52,7 @@ const OUTCOME_TEXT: Record<Exclude<SendOutcome, 'cancelled'>, string> = {
         <input type="checkbox" [checked]="includeSent()" (change)="toggleSent($event)" />
         Send the {{ state.sent().length }} item(s) sent before again too
       </label>
+      <p><a class="link" routerLink="/sent">Manage sent items</a></p>
     }
 
     <button class="btn btn-primary btn-block" type="button" [disabled]="sending() || toSend().length === 0"
@@ -70,15 +72,6 @@ const OUTCOME_TEXT: Record<Exclude<SendOutcome, 'cancelled'>, string> = {
           <button class="btn" type="button" (click)="keep()">No, keep them waiting</button>
         </div>
       </div>
-    }
-
-    @if (state.sent().length > 0) {
-      <h2>Already sent (kept for 7 days)</h2>
-      <ul class="list list-muted" aria-label="Already sent">
-        @for (item of state.sent(); track item.id) {
-          <li><span class="tag">{{ kind(item) }}</span><span class="list-text">{{ describe(item) }}</span></li>
-        }
-      </ul>
     }
   `,
 })

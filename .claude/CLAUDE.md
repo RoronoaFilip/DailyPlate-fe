@@ -22,5 +22,6 @@ data lives in the phone's IndexedDB until it is shared (Messenger, via the share
 - Keep the desktop palette. Do not add a dark theme. Keep text readable without colour.
 - No runtime network calls and no third-party runtime scripts; nothing the user logs may leave the phone except
   through the share sheet they trigger. Never add analytics.
-- Do not use `localStorage` for data; the outbox is the single store (IndexedDB through the `OutboxStore` port).
+- Outbox data lives only in IndexedDB through the `OutboxStore` port. Small preferences (such as how long sent items are
+  kept) go through the `SettingsStore` port, whose adapter uses localStorage. Never put photos, meals or foods there.
 - Write the test first for anything in `domain/`.

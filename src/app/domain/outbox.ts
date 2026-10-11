@@ -2,8 +2,7 @@ import type {
   FoodDraft, MealEntryDraft, OutboxItem, OutboxStatus, PhotoDraft,
 } from './models';
 import type { OutboxStore } from './ports';
-
-const DAY_MS = 24 * 60 * 60 * 1000;
+import { expiredSent, type Retention } from './retention';
 
 /**
  * The phone's queue of things to send to the computer. Items stay here (as `sent`) for a few days after
@@ -54,17 +53,22 @@ export class Outbox {
     }
   }
 
-  /** Remove sent items older than `olderThanDays`; returns how many were removed. */
-  async purgeSent(olderThanDays: number): Promise<number> {
-    const cutoff = this.now().getTime() - olderThanDays * DAY_MS;
-    let removed = 0;
-    for (const item of await this.store.getAll()) {
-      if (item.status === 'sent' && item.sentAt !== undefined && new Date(item.sentAt).getTime() < cutoff) {
-        await this.store.delete(item.id);
-        removed++;
-      }
+  /** Remove the sent items kept longer than `retention` allows; returns how many were removed. */
+  async purgeSent(retention: Retention): Promise<number> {
+    const expired = expiredSent(await this.store.getAll(), retention, this.now());
+    for (const item of expired) {
+      await this.store.delete(item.id);
     }
-    return removed;
+    return expired.length;
+  }
+
+  /** Remove every sent item (pending items are never touched); returns how many were removed. */
+  async removeAllSent(): Promise<number> {
+    const sent = (await this.store.getAll()).filter((item) => item.status === 'sent');
+    for (const item of sent) {
+      await this.store.delete(item.id);
+    }
+    return sent.length;
   }
 
   /** Food names typed before (newest first, no repeats ignoring case), for suggestions. */

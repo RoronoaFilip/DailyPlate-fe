@@ -22,5 +22,10 @@ export const routes: Routes = [
     title: 'Outbox · Daily Plate',
     loadComponent: () => import('./features/outbox/outbox-page').then((m) => m.OutboxPage),
   },
+  {
+    path: 'sent',
+    title: 'Sent · Daily Plate',
+    loadComponent: () => import('./features/sent/sent-page').then((m) => m.SentPage),
+  },
   { path: '**', redirectTo: 'photo' },
 ];

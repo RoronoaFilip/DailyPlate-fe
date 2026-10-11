@@ -33,5 +33,6 @@ export class TabBar {
     { path: 'meal', label: 'Meal', icon: '◔' },
     { path: 'food', label: 'Food', icon: '+' },
     { path: 'outbox', label: 'Outbox', icon: '↗' },
+    { path: 'sent', label: 'Sent', icon: '✓' },
   ];
 }

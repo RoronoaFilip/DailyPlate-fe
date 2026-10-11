@@ -117,7 +117,11 @@ details .field { margin-top: 10px; }
 .btn-primary { color: #ffffff; background: var(--primary); border-color: var(--primary-border); }
 .btn-primary:hover { background: var(--primary-hover); }
 .btn-primary:active { background: var(--primary-pressed); }
+.btn-danger { color: #ffffff; background: var(--danger); border-color: var(--danger); }
+.btn-danger:active { opacity: 0.85; }
 .btn-block { width: 100%; margin-top: 4px; }
+.link { color: var(--primary); font-weight: 600; }
+.settings { display: grid; gap: 12px; }
 .btn-small { min-height: 36px; padding: 4px 12px; }
 
 .status {

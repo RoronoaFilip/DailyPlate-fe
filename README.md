@@ -4,7 +4,7 @@ A small web app for your phone that captures **barcode photos, meals and new foo
 **one zip file** you send to your computer (for example through Messenger). The Daily Plate desktop app imports
 that file: drop it anywhere in the app and each part goes through the usual review screens.
 
-- **No server, no account, no cost.** Everything you log stays on your phone (IndexedDB) until you share it.
+- **No server, no account, no cost.** Everything you log stays on your phone (in the browser's own storage, not in memory) until you share it.
 - **Installable.** Add it to your iPhone home screen and it works offline.
 - **Same look as the desktop app.** The colour palette is copied from it (light theme only).
 
@@ -74,7 +74,25 @@ base path, publishes the site on GitHub Pages and attaches the built site as a z
 - [ ] Tap **Send**: does the share sheet offer Messenger, and does the message say *Shared as one zip file*?
       If it says *separate files* or *saved*, the phone refused a zip; the fallback worked, nothing else to do.
 - [ ] On the computer, download the file(s) from Messenger and drop them onto Daily Plate.
-- [ ] Back in the Outbox choose **Yes, mark as sent**; the items stay visible for 7 days, then are removed.
+- [ ] Back in the Outbox choose **Yes, mark as sent**; the items move to the **Sent** tab, where you can delete them one by one or all at once.
+
+## Where your data lives, and what "kept for N days" means
+
+- **Not in memory.** Memory (RAM) is wiped whenever the app is closed or reloaded. Everything you add is saved to the
+  browser's **IndexedDB**, which is on the phone's storage and survives closing the app, restarting the phone and
+  losing signal. Every time the app opens it reloads its lists from there. That is the point: a meal you logged at
+  lunch must still be waiting when you get home.
+- **Waiting items never expire.** Photos, meals and foods in the **Outbox** stay until you send or delete them.
+- **Sent items are a safety net.** After you mark items as sent they move to the **Sent** tab and are kept, so you can
+  send them again if Messenger lost the file. Nothing else needs them. How long they are kept is **your choice**
+  (default 7 days): a number of days, `0` to delete them as soon as they are marked as sent, or *keep until I delete
+  them*. You can also delete sent items one by one or all at once. Saving a shorter period deletes expired sent items
+  immediately, and the page tells you how many first.
+- **What can still erase the data.** Clearing the browser's website data, or iOS removing storage of a site that is
+  only open in a Safari tab and unused for about a week. Installing the app on the home screen (Share, Add to Home
+  Screen) and the app's request for persistent storage guard against this, so **install it**.
+- **The app itself** (its code, not your data) is cached by a service worker so it opens offline. A newly published
+  version downloads in the background and appears the next time you close and reopen the app.
 
 ## Project layout and architecture
 

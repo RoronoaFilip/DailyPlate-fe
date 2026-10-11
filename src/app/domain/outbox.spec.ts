@@ -49,6 +49,35 @@ describe('Outbox', () => {
     expect(ids).not.toContain(old.id);
   });
 
+  it('keeps sent items forever when the retention is null', async () => {
+    const { outbox, clock } = setup();
+    const item = await outbox.addMeal(meal);
+    await outbox.markSent([item.id]);
+    clock.advanceDays(10_000);
+    expect(await outbox.purgeSent(null)).toBe(0);
+    expect(await outbox.list('sent')).toHaveLength(1);
+  });
+
+  it('removes sent items straight away with a retention of 0, never pending ones', async () => {
+    const { outbox } = setup();
+    const sentItem = await outbox.addMeal(meal);
+    const pendingItem = await outbox.addMeal({ ...meal, foodName: 'Milk' });
+    await outbox.markSent([sentItem.id]);
+    expect(await outbox.purgeSent(0)).toBe(1);
+    expect((await outbox.list()).map((item) => item.id)).toEqual([pendingItem.id]);
+  });
+
+  it('removes all sent items at once and leaves the pending ones', async () => {
+    const { outbox } = setup();
+    const a = await outbox.addMeal(meal);
+    const b = await outbox.addMeal({ ...meal, foodName: 'Milk' });
+    const waiting = await outbox.addMeal({ ...meal, foodName: 'Rice' });
+    await outbox.markSent([a.id, b.id]);
+    expect(await outbox.removeAllSent()).toBe(2);
+    expect((await outbox.list()).map((item) => item.id)).toEqual([waiting.id]);
+    expect(await outbox.removeAllSent()).toBe(0);
+  });
+
   it('removes a single item', async () => {
     const { outbox } = setup();
     const item = await outbox.addMeal(meal);
