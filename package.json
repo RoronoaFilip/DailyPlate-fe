@@ -1,6 +1,6 @@
 {
   "name": "dailyplate-phone",
-  "version": "0.1.1",
+  "version": "0.1.0",
   "description": "Phone web app that captures barcode photos, meals and new foods and sends them to the Daily Plate desktop app.",
   "private": true,
   "engines": {
