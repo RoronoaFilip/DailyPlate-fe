@@ -42,8 +42,8 @@ jobs:
         env:
           TAG: ${{ inputs.tag }}
         run: |
-          if ! echo "$TAG" | grep -Eq '^v[0-9]+\.[0-9]+\.[0-9]+(-[0-9A-Za-z.-]+)?$'; then
-            echo "::error::'$TAG' is not a valid tag. Use the form v1.2.3 (or v1.2.3-beta.1)."
+          if ! echo "$TAG" | grep -Eq '^[0-9]+\.[0-9]+\.[0-9]+(-[0-9A-Za-z.-]+)?$'; then
+            echo "::error::'$TAG' is not a valid tag. Use the form 1.2.3 (or 1.2.3-beta.1)."
             exit 1
           fi
           if git ls-remote --exit-code --tags origin "refs/tags/$TAG" > /dev/null 2>&1; then
@@ -51,7 +51,7 @@ jobs:
             exit 1
           fi
           version=$(node -p "require('./package.json').version")
-          if [ "$TAG" != "v$version" ]; then
+          if [ "$TAG" != "$version" ]; then
             echo "::error::Tag $TAG does not match package.json version $version. Set \"version\" to ${TAG#v} and commit first."
             exit 1
           fi
